@@ -210,7 +210,7 @@ def make(self:ModuleMaker, cells, all_cells=None, lib_path=None):
         write_cells(cells[last_future:], self.hdr, f)
         f.write('\n')
 
-# %% ../nbs/api/maker.ipynb 38
+# %% ../nbs/api/maker.ipynb 41
 @patch
 def _update_all(self:ModuleMaker, all_cells, alls):
     return pformat(alls + self.make_all(all_cells), width=160)
@@ -222,7 +222,7 @@ def _make_exists(self:ModuleMaker, cells, all_cells=None):
         update_var('__all__', partial(self._update_all, all_cells), fn=self.fname)
     with self.fname.open('a') as f: write_cells(cells, self.hdr, f)
 
-# %% ../nbs/api/maker.ipynb 44
+# %% ../nbs/api/maker.ipynb 47
 def _basic_export_nb2(fname, name, dest=None):
     "A basic exporter to bootstrap nbdev using `ModuleMaker`"
     if dest is None: dest = get_config().lib_path

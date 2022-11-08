@@ -61,10 +61,11 @@ def update_var(varname, func, fn=None, code=None):
 # %% ../nbs/api/maker.ipynb 15
 class ModuleMaker:
     "Helper class to create exported library from notebook source cells"
-    def __init__(self, dest, name, nb_path, is_new=True, parse=True):
+    def __init__(self, dest, name, nb_path, is_new=None, parse=True):
         dest,nb_path = Path(dest),Path(nb_path)
-        store_attr()
         self.fname = dest/(name.replace('.','/') + ".py")
+        is_new = is_new or not self.fname.is_file()
+        store_attr()
         if is_new: dest.mkdir(parents=True, exist_ok=True)
         else: assert self.fname.exists(), f"{self.fname} does not exist"
         self.dest2nb = nb_path.relpath(self.fname.parent).as_posix()
@@ -210,7 +211,7 @@ def make(self:ModuleMaker, cells, all_cells=None, lib_path=None):
         write_cells(cells[last_future:], self.hdr, f)
         f.write('\n')
 
-# %% ../nbs/api/maker.ipynb 41
+# %% ../nbs/api/maker.ipynb 39
 @patch
 def _update_all(self:ModuleMaker, all_cells, alls):
     return pformat(alls + self.make_all(all_cells), width=160)
@@ -222,7 +223,7 @@ def _make_exists(self:ModuleMaker, cells, all_cells=None):
         update_var('__all__', partial(self._update_all, all_cells), fn=self.fname)
     with self.fname.open('a') as f: write_cells(cells, self.hdr, f)
 
-# %% ../nbs/api/maker.ipynb 47
+# %% ../nbs/api/maker.ipynb 49
 def _basic_export_nb2(fname, name, dest=None):
     "A basic exporter to bootstrap nbdev using `ModuleMaker`"
     if dest is None: dest = get_config().lib_path
